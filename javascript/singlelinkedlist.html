@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+        <script>
+            
+            $(document).ready(function(){
+                var myList = new LinkedList();
+                $('#btnAdd').click(function(){
+                    myList.addToTail($('#txtValue').val());
+                });
+                $('#btnShow').click(function(){
+                  myList.traverse(); 
+                })
+                
+                $('#btnRemove').click(function(){
+                    myList.removeLastNode();
+                })
+            });
+            
+            /*var Node = function(value){
+                var node = {};
+                node.value = value;
+                node.next = null;
+                return node;
+            };*/
+            
+            function Node(value) {
+                this.value = value;
+                this.next = null;
+            }
+            
+            function LinkedList() {
+                this.head = null;
+                this.tail = null;
+                
+                this.addToTail = function(value){
+                    var node = new Node(value);
+                    if (!this.head) {
+                        this.head = node;
+                        this.tail = node;
+                    } else {
+                        this.tail.next = node;
+                        this.tail = node;
+                    }
+                };
+                
+                this.removeLastNode = function() {
+                    var curNode = this.head;
+                    var prevNode = null;
+                    //find the prev of tail
+                    while(curNode != this.tail) {
+                        prevNode = curNode;
+                        curNode = curNode.next;
+                    }
+                    this.tail = prevNode;
+                    this.tail.next = null;
+                }
+                
+                this.traverse = function(){
+                    var curNode = this.head;
+                    while(curNode!=null){
+                        $('#content').append(curNode.value + '</br>');
+                        curNode = curNode.next;
+                    }
+                };
+
+            }
+            /*
+            var LinkedList = function() {
+                var list = {};
+                list.head = null;
+                list.tail = null;
+                
+                list.addToTail = function(value){
+                    var node = new Node(value);
+                    if (!list.head) {
+                        list.head = node;
+                        list.tail = node;
+                    } else {
+                        list.tail.next = node;
+                        list.tail = node;
+                    }
+                };
+                
+                list.removeLastNode = function() {
+                    var curNode = list.head;
+                    var prevNode = null;
+                    //find the prev of tail
+                    while(curNode != list.tail) {
+                        prevNode = curNode;
+                        curNode = curNode.next;
+                    }
+                    tail = prevNode;
+                    tail.next = null;
+                }
+                
+                list.traverse = function(){
+                    var curNode = list.head;
+                    while(curNode!=null){
+                        $('#content').append(curNode.value + '</br>');
+                        curNode = curNode.next;
+                    }
+                };
+                
+                
+                return list;
+            }
+            
+            */
+            
+        </script>
+    </head>
+    <body>
+        <div>TODO write content</div>
+        <input id="txtValue" type="text" value=""/>
+        <input id="btnAdd" type="button" value="add to list">
+        <input id="btnRemove" type="button" value="remove last">
+        <input id="btnShow" type="button" value="show">
+        <div id="content">
+        </div>
+    </body>
+</html>
