@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<title>JavaScript AJAX</title>
+</head>
+<body>	
+<h1>Speakers</h1>
+
+<div id="update">
+</div>
+<script src="jquery.js"></script>
+<script>
+$.getJSON('data.json', function(data) {
+	var output = '<ul>';
+	$.each(data, function(key, val) {
+		output += '<li \'' + val.key + '\'>' + val.name + '</li>';
+	});
+	output +='</ul>';
+	$('#update').prepend(output);
+});
+</script>
+</body>
+</html>
