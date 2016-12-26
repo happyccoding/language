@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JavaScript: Functions</title>
+  <script>
+  
+var speak = function(what) {
+	//console.log(this.love);
+	//console.log(this.normal);
+	console.log(what);
+}
+
+var saySomething = {love:"purr", normal:"meow"};
+
+//speak.call(saySomething);
+
+//speak.call(saySomething, saySomething.normal);
+speak.call(saySomething, saySomething.love, saySomething.normal);
+speak.apply(saySomething, ['meowoo']);
+  </script>
+</head>
+<body>
+</body>
+</html>

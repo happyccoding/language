@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JavaScript: Functions</title>
+</head>
+  <script>
+	var ray = function() {
+
+	  return {
+		speak: function() {
+		  console.log('hello');
+		}
+	  };
+	};
+	
+	var ray = new ray();
+    ray.speak();
+
+	var ray1 = (function() {
+
+	  return {
+		speak: function() {
+		  console.log('hello1');
+		}
+	  };
+	})();
+	
+    ray1.speak();
+	var $ = function(id) {
+		return document.getElementById(id);
+	}	
+	
+	document.write($("Name").value);
+	</script>
+<body>
+	<input id="Name" value="abc">
+</body>
+</html>

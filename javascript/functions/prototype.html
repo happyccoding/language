@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>JavaScript: Functions</title>
+  <script>
+  
+var speak = function(whatsay) {
+	console.log(whatsay);
+}
+
+var Dog = function() {
+	var name, breed;
+}
+
+Dog.prototype.speak = speak;
+
+firstDog = new Dog;
+firstDog.name = "Bob";
+firstDog.breed = "Dorberman";
+firstDog.speak = speak("woof woof");
+console.log(firstDog.name);  
+  </script>
+</head>
+<body>
+</body>
+</html>
