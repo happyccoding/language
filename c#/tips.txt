@@ -1,0 +1,520 @@
+// Example Code snippets for C# Delegates, Events, and Lambdas
+//
+// Use this file in conjunction with the Lynda.com course 
+//
+
+***************************************
+** DELEGATES
+***************************************
+
+--- BASIC DELEGATES ---
+1
+    // declare the delegate type
+    public delegate string MyDelegate(int arg1, int arg2);
+
+2
+        static string func1(int a, int b)
+        {
+            return (a + b).ToString();
+        }
+        static string func2(int a, int b)
+        {
+            return (a * b).ToString();
+        }
+
+3
+            MyDelegate f = func1;
+            Console.WriteLine("The number is: " + f(10, 20));
+            f = func2;
+            Console.WriteLine("The number is: " + f(10, 20));
+
+4
+    class MyClass
+    {
+        // Delegates can be bound to instance members as well as
+        // static class functions
+        public string instanceMethod1(int arg1, int arg2)
+        {
+            return ((arg1 + arg2) * arg1).ToString();
+        }
+    }
+
+5
+            MyClass mc = new MyClass();
+            f = mc.instanceMethod1;
+            Console.WriteLine("The number is: " + f(10, 20));
+
+
+--- ANONYMOUS DELEGATES ---
+
+            MyDelegate f = delegate(int arg1, int arg2) {
+                return (arg1 + arg2).ToString();
+            };
+            Console.WriteLine("The number is: " + f(10,20));
+
+
+--- COMPOSABLE DELEGATES ---
+1
+            MyDelegate f1 = func1;
+            MyDelegate f2 = func2;
+            MyDelegate f1f2 = f1 + f2;
+
+            // call each delegate and then the chain
+            Console.WriteLine("Calling the first delegate");
+            f1(10, 20);
+            Console.WriteLine("Calling the second delegate");
+            f2(10, 20);
+            Console.WriteLine("\nCalling the chained delegates");
+            f1f2(10, 20);
+
+2
+            // subtract off one of the delegates
+            Console.WriteLine("\nCalling the unchained delegates");
+            f1f2 -= f1;
+            f1f2(20, 20);
+
+--- COMPOSABLE DELEGATES WITH REFERENCES ---
+
+        static void func1(int arg1, ref int arg2)
+        {
+            string result = (arg1 + arg2).ToString();
+            arg2 += 20; // arg2 is a ref parameter, so this will change it
+            Console.WriteLine("The number is: " + result);
+        }
+        static void func2(int arg1, ref int arg2)
+        {
+            string result = (arg1 * arg2).ToString();
+            Console.WriteLine("The number is: " + result);
+        }
+
+
+***************************************
+** EVENTS
+***************************************
+
+--- BASIC EVENTS ---
+1
+    class EventPublisher
+    {
+        private string theVal;
+
+        // declare the event
+        public event myEventHandler valueChanged;
+
+        public string Val
+        {
+            set
+            {
+                this.theVal = value;
+                // when the value changes, fire the event
+                this.valueChanged(theVal);
+            }
+        }
+    }
+
+2
+        static void obj_valueChanged(string value)
+        {
+            Console.WriteLine("The value changed to {0}", value);
+        }
+
+3
+            // use a named function as an event handler
+            EventPublisher obj = new EventPublisher();
+            obj.valueChanged += obj_valueChanged;
+
+4
+            // use an anonymous delegate as an event handler
+            obj.valueChanged += delegate(string val) {
+                Console.WriteLine("The value changed to {0}", val);
+            };
+
+--- CHAINED EVENTS ---
+
+            // Connect multiple event handlers
+            obj.valueChanged += changeListener1;
+            obj.valueChanged += changeListener2;
+
+            // Use an anonymous delegate as the event handler
+            obj.valueChanged += delegate(string s) {
+                Console.WriteLine("This came from the anonymous handler!");
+            };
+
+
+--- USING THE .NET EVENTARGS CLASS --
+
+1
+    class ObjChangeEventArgs : EventArgs
+    {
+        public string propChanged;
+    }
+
+2
+        public event EventHandler<ObjChangeEventArgs> objChanged;
+
+3
+                this.objChanged(this, new ObjChangeEventArgs() { propChanged = "Val" });
+
+4
+            obj.objChanged += delegate(object sender, ObjChangeEventArgs e) {
+                Console.WriteLine("{0} had the '{1}' property changed", sender.GetType(), e.propChanged);
+            };
+
+
+***************************************
+** LAMBDA FUNCTIONS
+***************************************
+
+--- BASIC LAMBDAS ---
+1
+            // Create a basic delegate that squares a number
+            MyDelegate foo = (x) => x * x;
+            Console.WriteLine("The result of foo is: {0}", foo(5));
+
+            // Dynamically change the delegate to something else
+            foo = (x) => x * 10;
+            Console.WriteLine("The result of bar is: {0}", foo(5));
+
+2			
+            // Create a delegate that takes multiple arguments
+            MyDelegate2 bar = (x, y) => {
+                Console.WriteLine("The two-arg lambda: {1}, {0}", x * 10, y);
+            };
+			bar(25, "Some string");
+
+            // Define an expression delegate
+            ExprDelegate baz = (x) => x > 10;
+            Console.WriteLine("Calling baz with 5: {0}", baz(5));
+            Console.WriteLine("Calling bax with 15: {0}", baz(15));
+
+
+--- LAMBDAS AS DELEGATES ---
+
+            // Use a Lambda expression to define an event handler
+            // Note that this is a statement lambda, due to use of { }
+            obj.valueChanged += (x) => {
+                Console.WriteLine("The value changed to {0}", x);
+            };
+
+
+// Example Code snippets for C# Interfaces and Generics
+//
+// Use this file in conjunction with the Lynda.com course 
+//
+
+***************************************
+** Interfaces
+***************************************
+
+--- BASIC INTERFACES ---
+1
+    class Document
+    {
+        private string name;
+
+        public Document(string s) {
+            name = s;
+            Console.WriteLine("Created a document with name '{0}'", s);
+        }
+    }
+
+2
+    interface IStorable
+    {
+        void Save();
+        void Load();
+        Boolean NeedsSave { get; set; }
+    }
+
+3
+        private Boolean mNeedsSave = false;
+
+        public void Save() {
+            Console.WriteLine("Saving the document");
+        }
+
+        public void Load() {
+            Console.WriteLine("Loading the document");
+        }
+
+        public Boolean NeedsSave {
+            get { return mNeedsSave;  }
+            set { mNeedsSave = value; }
+        }
+
+4
+            d.Load();
+            d.Save();
+            d.NeedsSave = false;
+
+
+--- INTERFACES AND CASTING ---
+
+1
+            // Use the 'is' operator
+            if (d is IStorable) {
+                d.Save();
+            }
+
+            // Use the 'as' operator
+            IStorable intStor = d as IStorable;
+            if (intStor != null) {
+                d.Load();
+            }
+
+
+--- MULTIPLE INTERFACES ---
+
+1
+    interface IEncryptable
+    {
+        void Encrypt();
+        void Decrypt();
+    }
+
+2
+        public void Encrypt() {
+            Console.WriteLine("Encrypting the document");
+        }
+
+        public void Decrypt() {
+            Console.WriteLine("Decrypting the document");
+        }
+
+3
+            d.Load();
+            d.Encrypt();
+            d.Save();
+            d.Decrypt();
+            d.NeedsSave = false;
+
+
+--- EXPLICIT INTERFACES ---
+
+1
+    interface IFoo
+    {
+        void SomeMethod();
+    }
+    interface IBar
+    {
+        void SomeMethod();
+    }
+
+    class FooBar: IFoo, IBar
+    {
+	    public void SomeMethod() {
+            Console.WriteLine("This is the class SomeMethod");
+		}
+    }
+
+2
+            FooBar fb = new FooBar();
+            fb.SomeMethod();
+
+            IFoo ifoo = fb as IFoo;
+            ifoo.SomeMethod();
+
+            IBar ibar = fb as IBar;
+            ibar.SomeMethod();
+
+3
+        void IFoo.SomeMethod() {
+            Console.WriteLine("This is IFoo's SomeMethod");
+        }
+        void IBar.SomeMethod() {
+            Console.WriteLine("This is IBar's SomeMethod");
+        }
+
+
+--- .NET PROVIDED INTERFACES ---
+
+1
+// Include the namespace that contains INotifyPropertyChanged
+using System.ComponentModel;
+
+2
+        // INotifyPropertyChanged requires the implementation of 1 event
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        // Utility function to call the PropertyChanged event
+        private void NotifyPropChanged(string propName) {
+            PropertyChanged(this, new PropertyChangedEventArgs(propName));
+        }
+
+3
+            d.PropertyChanged += delegate(object sender, PropertyChangedEventArgs e) {
+                Console.WriteLine("Document property changed: {0}", e.PropertyName);
+            };
+
+
+***************************************
+** Generics
+***************************************
+
+--- BENEFITS OF GENERICS ---
+
+1
+            // non-generic ArrayList can hold any object
+            ArrayList arrList = new ArrayList();
+            arrList.Add(1);
+            arrList.Add(2);
+            arrList.Add(3);
+
+2			
+            // We can tell a Generic List what to hold
+            List<int> arrList = new List<int>();
+            arrList.Add(1);
+            arrList.Add(2);
+            arrList.Add(3);
+
+
+--- GENERIC LIST COLLECTIONS ---
+
+1
+    class Employee
+    {
+        public string mName;
+        public int mSalary;
+
+        public Employee(string name, int salary) {
+            mName = name;
+            mSalary = salary;
+        }
+    }
+
+2
+            // Create a new empty List for Employee objects 
+            List<Employee> empList = new List<Employee>();
+
+            // Add some records to the list
+            empList.Add(new Employee("John Doe", 50000 ));
+            empList.Add(new Employee("Jane Smith", 60000 ));
+            empList.Add(new Employee("Nick Slick", 55000 ));
+            empList.Add(new Employee("Mildred Mintz", 70000 ));
+
+            // Inspect some List properties
+            Console.WriteLine("empList Capacity is: {0}", empList.Capacity);
+            Console.WriteLine("empList Count is: {0}", empList.Count);
+
+3
+            // Use Exists() and Find()
+            if (empList.Exists(HighPay)) {
+                Console.WriteLine("\nHighly Paid Employee Found!\n");
+            }
+            Employee e = empList.Find(x => x.mName.StartsWith("J"));
+            if (e != null) {
+                Console.WriteLine("Found employee whose name starts with J: {0}", e.mName);
+            }
+
+
+        // delegate function to use for the Exists method
+        static Boolean HighPay(Employee emp) {
+            return emp.mSalary >= 65000;
+        }
+
+4
+            // Use ForEach to iterate over each item
+            empList.ForEach(TotalSalaries);
+            Console.WriteLine("Total payroll is: {0}\n", total);
+
+
+        // Iterator function for the ForEach method
+        static int total = 0;
+        static void TotalSalaries(Employee e) {
+            total += e.mSalary;
+        }
+
+5
+            // Sort the list using a custom class
+            // that implements the IComparer interface
+            EmployeeComparer ec = new EmployeeComparer();
+            empList.Sort(ec);
+            foreach (Employee emp in empList) {
+                Console.WriteLine("Salary for {0} is {1}", emp.mName, emp.mSalary);
+            }
+
+6
+
+    class EmployeeComparer : IComparer<Employee>
+    {
+        public int Compare(Employee x, Employee y) {
+            if (x.mSalary > y.mSalary)
+                return 1;
+            if (x.mSalary == y.mSalary)
+                return 0;
+            else
+                return -1;
+        }
+    }
+
+
+--- GENERIC QUEUE AND STACK ---
+
+1
+            // Push some items on to the stack
+            sportsStack.Push("Baseball");
+            sportsStack.Push("Football");
+            sportsStack.Push("Cricket");
+            sportsStack.Push("Basketball");
+            sportsStack.Push("Hockey");
+            sportsStack.Push("Rugby");
+
+2
+            // Let's see how many items are on the stack
+            Console.WriteLine("There are {0} sports in the stack.", sportsStack.Count);
+
+            // Peek at the top item
+            Console.WriteLine("The top item is {0}", sportsStack.Peek());
+
+            // Pop 2 items, then try the Contains method
+            sportsStack.Pop();
+            sportsStack.Pop();
+            Console.WriteLine("Stack contains Hockey: {0}", sportsStack.Contains("Hockey"));
+
+
+3
+            sportsQueue.Enqueue("Baseball");
+            sportsQueue.Enqueue("Football");
+            sportsQueue.Enqueue("Cricket");
+            sportsQueue.Enqueue("Basketball");
+            sportsQueue.Enqueue("Hockey");
+            sportsQueue.Enqueue("Rugby");
+
+
+            // Let's see how many items are on the queue
+            Console.WriteLine("\nThere are {0} sports in the queue.", sportsQueue.Count);
+
+            // Peek at the front item
+            Console.WriteLine("The front item is {0}", sportsQueue.Peek());
+
+            // Dequeue 2 items, then try the Contains method
+            sportsQueue.Dequeue();
+            sportsQueue.Dequeue();
+            Console.WriteLine("Queue contains Hockey: {0}", sportsQueue.Contains("Hockey"));
+
+
+--- GENERIC DICTIONARY ---
+
+1
+            // How many key/value pairs are there?
+            Console.WriteLine("There are {0} key/value pairs\n", fileTypes.Count);
+
+            // try adding an existing key
+            try {
+                fileTypes.Add(".htm", "Web page");
+            }
+            catch (ArgumentException e) {
+                Console.WriteLine("Key already exists in Dictionary\n");
+            }
+
+            // try removing and then finding a key
+            fileTypes.Remove(".css");
+            Console.WriteLine("fileTypes contains CSS: {0}\n", fileTypes.ContainsKey(".css"));
+
+            // Dump the contents of the Dictionary
+            Console.WriteLine("Dumping Dictionary contents:");
+            foreach (KeyValuePair<string, string> kvp in fileTypes) {
+                Console.WriteLine("Key = {0}, Value = {1}", kvp.Key, kvp.Value);
+            }
+
