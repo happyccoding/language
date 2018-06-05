@@ -32,7 +32,7 @@ for i in xrange(5):
 print "\n"    
 list = LinkedList()
 
-list.addToTail("abc")
-list.addToTail("def")
+list.addToTail("abcd")
+list.addToTail("efgh")
 list.traverse()
 
