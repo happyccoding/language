@@ -18,3 +18,23 @@ console.log(li);
 var li = ['a', 'b', 'c', 'd', 'e'];
 li.splice(2, 0, 'B');
 console.log(li);
+
+//다음은 배열의 첫번째 원소를 제거하는 방법이다. shift를 사용하면 된다. 아래 결과는 b, c, d, e 다
+var li = ['a', 'b', 'c', 'd', 'e'];
+li.shift();
+console.log(li);
+
+//다음은 배열 끝점의 원소를 배열 li에서 제거한다. 이때는 pop를 사용한다. 결과는 a, b, c, d 다.
+var li = ['a', 'b', 'c', 'd', 'e'];
+li.pop();
+console.log(li);
+
+//다음은 정렬하는 방법이다. 결과는 a, b, c, d, e 다.
+var li = ['c', 'e', 'a', 'b', 'd'];
+li.sort();
+console.log(li);
+
+//역순으로 정렬하고 싶을 때는 아래와 같이 한다.
+var li = ['c', 'e', 'a', 'b', 'd'];
+li.reverse();
+console.log(li);
